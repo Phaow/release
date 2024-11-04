@@ -37,24 +37,30 @@ function exec_command() {
 }
 
 WIN_NODES_NAMES=$(oc get no -l beta.kubernetes.io/os=windows -o jsonpath='{.items[*].metadata.name}')
-
 # Check if WIN_NODES_NAMES is empty
-if [ -z "${WIN_NODES_NAMES}" ]; then
-    logger "ERROR" "No Windows nodes found." && exit 1
-else
+if [ -n "$WIN_NODES_NAMES" ]; then
     logger "INFO" "Found Windows nodes: $WIN_NODES_NAMES"
     # Use IFS to split the string by spaces and store it in an array
-    IFS=' ' read -r -a win_nodes_array <<< "$WIN_NODES_NAMES"
+    IFS=' ' read -r -a win_nodes_array <<< "$WIN_NODES_NAMES" 
+else
+    logger "ERROR" "No Windows nodes found." && exit 1
 fi
 
 WIN_NODE_NAME=${win_nodes_array[0]}
 WIN_NODE_ID=$(oc get nodes "${WIN_NODE_NAME}" -o jsonpath='{.spec.providerID}'|awk -F '/' '{print $NF}')
+if [ -n "$WIN_NODE_ID" ]; then
+    logger "INFO" "${WIN_NODE_NAME} nodeID is ${WIN_NODE_ID}"
+else
+    logger "ERROR" "Could not nodeID for node ${WIN_NODE_NAME}"
+    exit 1
+fi
+
 WIN_NODE_IP=$(oc get nodes "${WIN_NODE_NAME}" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
-logger "INFO" "${WIN_NODE_NAME} nodeID is ${WIN_NODE_ID}, internal ip is ${WIN_NODE_IP}"
+logger "INFO" "${WIN_NODE_NAME} internal ip is ${WIN_NODE_IP}"
 if [ -n "$WIN_NODE_IP" ]; then
     export WIN_NODE_IP
 else
-    logger "ERROR" "Could not retrieve IP for node ${WIN_NODE_NAME}" >&2
+    logger "ERROR" "Could not retrieve IP for node ${WIN_NODE_NAME}"
     exit 1
 fi
 
