@@ -154,7 +154,8 @@ chain:
         --pull-secret ${PULL_SECRET_PATH} \
         --azure-creds ${AZURE_CREDS} \
         --location ${HC_LOCATION} \
-        --release-image ${RELEASE_IMAGE} \
+        # --release-image ${RELEASE_IMAGE} \
+        --release-image registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-01-23-220424 \
         --encryption-key-id=${ENCRYPTION_KEY_ID} \
         --control-plane-operator-image=quay.io/pewang/hcp:cpo \
         --disk-encryption-set-id=${DISK_ENCRYPTION_SET_ID} \
@@ -243,9 +244,8 @@ chain:
         exit 0
       fi
 
-      echo "Running command: ${COMMAND[@]}" > ${SHARED_DIR}/create_commands
+      echo "Running command: ${COMMAND[@]}" > /tmp/create_hc_commands
       ("${COMMAND[@]}" || true)
-      sleep 12h
 
       # The timeout should be much lower, this is due to https://bugzilla.redhat.com/show_bug.cgi?id=2060091
       echo "Waiting for cluster to become available"
@@ -279,8 +279,8 @@ chain:
           oc get clusterversion 2>/dev/null || true
           sleep 1s
       done
-      echo "Clusteroperators are ready"
-      # sleep 8h
+      echo "Hosted cluster cluster-operators are ready"
+      sleep 12h
     from: hypershift-operator
     grace_period: 5m0s
     resources:
