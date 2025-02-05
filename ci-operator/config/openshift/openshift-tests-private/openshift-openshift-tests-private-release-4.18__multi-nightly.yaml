@@ -928,8 +928,8 @@ tests:
     env:
       BASE_DOMAIN: qe.azure.devcluster.openshift.com
       COMPUTE_NODE_TYPE: Standard_D4ps_v5
-      FILTERS_ADDITIONAL: Azure-File-CSI-Driver&
       OCP_ARCH: arm64
+      TEST_SCENARIOS: \[Azure-File-CSI-Driver\]
     test:
     - chain: openshift-e2e-test-qe
     - ref: wait
