@@ -928,9 +928,11 @@ tests:
     env:
       BASE_DOMAIN: qe.azure.devcluster.openshift.com
       COMPUTE_NODE_TYPE: Standard_D4ps_v5
+      FILTERS_ADDITIONAL: Azure-File-CSI-Driver&
       OCP_ARCH: arm64
     test:
     - chain: openshift-e2e-test-qe
+    - ref: wait
     workflow: cucushift-installer-rehearse-azure-ipi-fullyprivate-proxy
 - as: azure-ipi-ingress-controller-arm-mixarch-f7
   cron: 59 0 6,13,20,29 * *
