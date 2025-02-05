@@ -154,10 +154,9 @@ chain:
         --pull-secret ${PULL_SECRET_PATH} \
         --azure-creds ${AZURE_CREDS} \
         --location ${HC_LOCATION} \
-        # --release-image ${RELEASE_IMAGE} \
-        --release-image registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-01-23-220424 \
+        --release-image ${RELEASE_IMAGE} \
         --encryption-key-id=${ENCRYPTION_KEY_ID} \
-        --control-plane-operator-image=quay.io/pewang/hcp:cpo \
+        # --control-plane-operator-image=quay.io/pewang/hcp:cpo \
         --disk-encryption-set-id=${DISK_ENCRYPTION_SET_ID} \
         --resource-group-name=${RESOURCE_GROUP_NAME} \
         --vnet-id=${VNET_ID} \
