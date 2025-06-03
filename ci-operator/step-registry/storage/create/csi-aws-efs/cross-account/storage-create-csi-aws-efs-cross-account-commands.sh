@@ -280,6 +280,11 @@ logger "INFO" "Attach the inline Policies to the efs csi driver operator Role in
 # aws iam attach-role-policy \
 #   --role-name "${CLUSTER_NAME}"-master-role \
 #   --policy-arn arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess
+# ROSA clusters
+CONTROL_PLANE_ROLE_NAME=$(jq -r .aws.sts.control_plane_role_arn < "${SHARED_DIR}"/cluster-config | xargs basename | tr -d '\n')
+aws iam attach-role-policy \
+  --role-name "${CONTROL_PLANE_ROLE_NAME}" \
+  --policy-arn arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess
 
 # STEP. Create a secret with awsRoleArn as the key and ACCOUNT_B_ROLE_ARN as the value, add secret access permission for the aws-efs-csi-driver-controller-sa
 oc create -n ${EFS_CSI_DRIVER_OPERATOR_INSTALLED_NAMESPACE} secret generic efs-csi-cross-account --from-literal=awsRoleArn="${ACCOUNT_B_ROLE_ARN}"
